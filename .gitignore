@@ -1,0 +1,7 @@
+
+# Ignorando pastas node
+node_modules
+package-lock.json
+
+#Arquivos de servidor
+*.env
