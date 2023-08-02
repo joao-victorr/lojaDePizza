@@ -184,7 +184,7 @@ h1 {
     border-radius:10px;
     overflow:hidden;
 }
-.pizzaInfo--size {
+.pizzaInfo--size-small, .pizzaInfo--size-medium, .pizzaInfo--size-large  {
     padding:10px 15px;
     color:#000;
     background-color:#EEE;
@@ -192,7 +192,7 @@ h1 {
     font-weight: bold;
     cursor:pointer;
 }
-.pizzaInfo--size:hover {
+.pizzaInfo--size-small:hover, .pizzaInfo--size-medium:hover, .pizzaInfo--size-large:hover {
     background-color:#CCC;
 }
 .pizzaInfo--size.selected {

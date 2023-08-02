@@ -4,58 +4,71 @@ const docAll = (el) => document.querySelectorAll(el);
 let modalQt = 1;
 let modalKey = null;
 let cart = [];
+let pizzaJson = null;
 
-const discountCoupon = 0.1
- 
+const discountCoupon = 0.1;
 
-//Inserção dos item ao HTMl
-pizzaJson.map((item, index) => {
+getAllPizza();
 
-    //preenche as informações em pizza-item;
-    let pizzaItem = doc(".models .pizza-item").cloneNode(true);
-    pizzaItem.querySelector(".pizza-item--img img").src = item.img
-    pizzaItem.setAttribute('data-key', index);
-    pizzaItem.querySelector(".pizza-item--name").textContent = item.name;
-    pizzaItem.querySelector(".pizza-item--desc").textContent = item.description;
-    pizzaItem.querySelector(".pizza-item--price").textContent = `R$ ${item.price.toFixed(2)}`;
-    
-    //Evento de abertura do Modal
-    pizzaItem.querySelector("a").addEventListener("click", (e) => {
+async function getAllPizza() {
 
-        //Desativando o evento padrão
-        e.preventDefault();
+    fetch('http://localhost:4000/api/pizza')
+    .then((res) => {
+        return res.json();
+    }).then((res) => {
+        return pizzaJson = res;
+    }).then((res) => {
 
-        //Selecionando a pizza em que foi clicada
-        let key = e.target.closest(".pizza-item").getAttribute("data-key");
-        modalKey = key
+        //Inserção dos item ao HTMl
+        pizzaJson.map((item, index) => {
 
-        //Adicionando informação/imagens da pizza selecionada
-        doc(".pizzaBig img").src = pizzaJson[key].img;
-        doc(".pizzaInfo h1").textContent = pizzaJson[key].name;
-        doc(".pizzaInfo .pizzaInfo--desc").textContent = pizzaJson[key].description;
-        doc(".pizzaInfo .pizzaInfo--actualPrice").textContent = `R$ ${pizzaJson[key].price.toFixed(2)}`
-        doc(".pizzaInfo--size.selected").classList.remove('selected')
+            //preenche as informações em pizza-item;
+            let pizzaItem = doc(".models .pizza-item").cloneNode(true);
+            pizzaItem.querySelector(".pizza-item--img img").src = item.img
+            pizzaItem.setAttribute('data-key', index);
+            pizzaItem.querySelector(".pizza-item--name").textContent = item.name;
+            pizzaItem.querySelector(".pizza-item--desc").textContent = item.description;
+            pizzaItem.querySelector(".pizza-item--price").textContent = `R$ ${item.price.toFixed(2)}`;
+            
+            //Evento de abertura do Modal
+            pizzaItem.querySelector("a").addEventListener("click", (e) => {
 
-        //Adiciona o peso de cada tamanho e seleciona o produto principal
-        docAll(".pizzaInfo--size").forEach((size, sizeIndex) => {
-            if(sizeIndex === 2) {
-                size.classList.add("selected");
-            }
-            size.querySelector("span").textContent = pizzaJson[key].sizes[sizeIndex];
+                //Desativando o evento padrão
+                e.preventDefault();
+
+                //Selecionando a pizza em que foi clicada
+                let key = e.target.closest(".pizza-item").getAttribute("data-key");
+                modalKey = key
+
+                //Adicionando informação/imagens da pizza selecionada
+                doc(".pizzaBig img").src = pizzaJson[key].img;
+                doc(".pizzaInfo h1").textContent = pizzaJson[key].name;
+                doc(".pizzaInfo .pizzaInfo--desc").textContent = pizzaJson[key].description;
+                doc(".pizzaInfo .pizzaInfo--actualPrice").textContent = `R$ ${pizzaJson[key].price.toFixed(2)}`
+                // doc(".pizzaInfo--size.selected").classList.remove('selected')
+
+                //Adiciona o peso de cada tamanho e seleciona o produto principal
+                doc(".pizzaInfo--size-small span").textContent = pizzaJson[key].small_size; 
+                doc(".pizzaInfo--size-medium span").textContent = pizzaJson[key].medium_size; 
+                doc(".pizzaInfo--size-large span").textContent = pizzaJson[key].large_size; 
+
+                doc(".pizzaInfo--qt").textContent =modalQt;
+
+                //Evento de abertura ao clicar em uma pizza
+                doc(".pizzaWindowArea").style.opacity = "0";
+                doc(".pizzaWindowArea").style.display = "flex";
+                setTimeout(() => doc(".pizzaWindowArea").style.opacity = "1", 1);
+
+            });
+
+            doc(".pizza-area").appendChild(pizzaItem);
+
         })
-
-        doc(".pizzaInfo--qt").textContent =modalQt;
-
-        //Evento de abertura ao clicar em uma pizza
-        doc(".pizzaWindowArea").style.opacity = "0";
-        doc(".pizzaWindowArea").style.display = "flex";
-        setTimeout(() => doc(".pizzaWindowArea").style.opacity = "1", 1);
 
     });
 
-    doc(".pizza-area").appendChild(pizzaItem);
+};
 
-})
 
 //EVENTOS DO MODAL:
 //Evento de fechamento do modal
@@ -99,7 +112,7 @@ docAll(".pizzaInfo--size").forEach((size) => {
 //
 doc(".pizzaInfo--addButton").addEventListener("click", () => {
 
-    let size = parseInt(doc(".pizzaInfo--size.selected").getAttribute("data-key"))
+    let size = parseInt(doc(".pizzaInfo--size.selected").getAttribute("data-key"));
     let identifier =pizzaJson[modalKey].id + "#" + size
     let key = cart.findIndex((item) => item.identifier == identifier)
 
@@ -202,5 +215,3 @@ function updateCart() {
         return;
     }
 }
-
-
